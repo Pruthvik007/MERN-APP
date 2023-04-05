@@ -1,4 +1,4 @@
-const Model = require("../models/Employee.js");
+const Model = require("../Models/Employee.js");
 const {
   STATUS,
   getResponse,
