@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const Model = require("../Models/User");
+const Model = require("../Models/User.js");
 const User = Model.User;
 const {
   STATUS,

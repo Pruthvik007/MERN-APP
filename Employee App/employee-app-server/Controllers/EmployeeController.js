@@ -1,9 +1,9 @@
-const Model = require("../models/Employee");
+const Model = require("../models/Employee.js");
 const {
   STATUS,
   getResponse,
   getErrorResponse,
-} = require("../Helpers/ResponseHelper");
+} = require("../Helpers/ResponseHelper.js");
 const Employee = Model.Employee;
 
 exports.getEmployees = async function (req, res) {
