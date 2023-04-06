@@ -1,21 +1,28 @@
-exports.STATUS = {
+const STATUS = {
   SUCCESS: "SUCCESS",
-  ERROR: "ERROR",
   FAILURE: "FAILURE",
+  ERROR: "ERROR",
 };
 
-exports.getResponse = (data, status, message) => {
+exports.getSuccessResponse = (data) => {
   return {
     data: data,
-    status: status,
+    status: STATUS.SUCCESS,
+  };
+};
+
+exports.getFailureResponse = (message) => {
+  return {
+    data: null,
+    status: STATUS.FAILURE,
     message: message,
   };
 };
 
-exports.getErrorResponse = (message) => {
+exports.getErrorResponse = (error) => {
   return {
     data: null,
-    status: "ERROR",
-    message: message || "SERVER ERROR",
+    status: STATUS.ERROR,
+    message: error.message || "SERVER ERROR",
   };
 };

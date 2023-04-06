@@ -1,49 +1,51 @@
 const Model = require("../Models/Employee.js");
 const {
-  STATUS,
-  getResponse,
-  getErrorResponse,
+  getSuccessResponse,
+  getFailureResponse,
 } = require("../Helpers/ResponseHelper.js");
 const Employee = Model.Employee;
-
-exports.getEmployees = async function (req, res) {
+const { validateEmployee } = require("../Helpers/Validator.js");
+exports.getEmployees = async function (req, res, next) {
   let response = {};
   try {
     const employees = await Employee.find();
-    response = getResponse(employees, STATUS.SUCCESS, null);
+    response = getSuccessResponse(employees);
+    res.status(200).send(response);
   } catch (err) {
-    console.log(err);
-    response = getErrorResponse(err);
+    next(err);
   }
-  res.status(200).send(response);
 };
 
-exports.getEmployee = async function (req, res) {
+exports.getEmployee = async function (req, res, next) {
   let response = {};
   try {
     const employee = await Employee.findById(req.params.id);
-    response = getResponse(employee, STATUS.SUCCESS, null);
+    response = getSuccessResponse(employee);
+    res.status(200).send(response);
   } catch (err) {
-    console.log(err);
-    response = getErrorResponse(err);
+    next(err);
   }
-  res.status(200).send(response);
 };
 
-exports.createEmployee = async function (req, res) {
+exports.createEmployee = async function (req, res, next) {
   let response = {};
   try {
-    const employee = new Employee(req.body);
-    const saveResponse = await employee.save();
-    response = getResponse(saveResponse, STATUS.SUCCESS, null);
+    let errorMessage = validateEmployee(req.body);
+    if (errorMessage) {
+      response = getFailureResponse(errorMessage);
+      res.status(200).send(response);
+    } else {
+      const employee = new Employee(req.body);
+      const saveResponse = await employee.save();
+      response = getSuccessResponse(saveResponse);
+      res.status(200).send(response);
+    }
   } catch (err) {
-    console.log(err);
-    response = getErrorResponse(err);
+    next(err);
   }
-  res.status(200).send(response);
 };
 
-exports.replaceEmployee = async function (req, res) {
+exports.replaceEmployee = async function (req, res, next) {
   let response = {};
   try {
     const id = req.params.id;
@@ -56,15 +58,14 @@ exports.replaceEmployee = async function (req, res) {
         new: true,
       }
     );
-    response = getResponse(replaceResponse, STATUS.SUCCESS, null);
+    response = getSuccessResponse(replaceResponse);
+    res.status(200).send(response);
   } catch (err) {
-    console.log(err);
-    response = getErrorResponse(err);
+    next(err);
   }
-  res.status(200).send(response);
 };
 
-exports.updateEmployee = async function (req, res) {
+exports.updateEmployee = async function (req, res, next) {
   let response = {};
   try {
     let updateResponse = await Employee.findOneAndUpdate(
@@ -74,22 +75,20 @@ exports.updateEmployee = async function (req, res) {
         new: true,
       }
     );
-    response = getResponse(updateResponse, STATUS.SUCCESS, null);
+    response = getSuccessResponse(updateResponse);
+    res.status(200).send(response);
   } catch (err) {
-    console.log(err);
-    response = getErrorResponse(err);
+    next(err);
   }
-  res.status(200).send(response);
 };
 
-exports.deleteEmployee = async function (req, res) {
+exports.deleteEmployee = async function (req, res, next) {
   let response = {};
   try {
     let employee = await Employee.findOneAndDelete({ _id: req.params.id });
-    response = getResponse(employee, STATUS.SUCCESS, null);
+    response = getSuccessResponse(employee);
+    res.status(200).send(response);
   } catch (err) {
-    console.log(err);
-    response = getErrorResponse(err);
+    next(err);
   }
-  res.status(200).send(response);
 };
