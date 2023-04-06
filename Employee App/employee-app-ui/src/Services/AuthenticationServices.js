@@ -1,14 +1,16 @@
 import { fetch } from "../Utils/Axios";
 import Validator from "../Helpers/Validator";
 import UserActions from "../Redux/Actions/UserActions";
+import bcrypt from "bcryptjs";
 const AuthenticationServices = () => {
   const ERROR_MESSAGE = "Unable to Authenticate";
   const userActions = UserActions();
   const validator = Validator();
   const login = async (user) => {
-    return fetch("login","POST",user)
+    return fetch("login", "POST", user)
       .then((response) => {
         if (validator.isSuccess(response)) {
+          localStorage.setItem("accessToken", response.accessToken);
           userActions.login(response.data);
           return null;
         } else {
@@ -21,7 +23,8 @@ const AuthenticationServices = () => {
       });
   };
   const signUp = async (user) => {
-    return fetch("signup","POST",user)
+    user.password = bcrypt.hashSync(user.password, 10);
+    return fetch("signup", "POST", user)
       .then((response) => {
         if (validator.isSuccess(response)) {
           return null;

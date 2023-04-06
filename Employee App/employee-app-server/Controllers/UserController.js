@@ -14,8 +14,8 @@ exports.login = async function (req, res, next) {
     if (user) {
       const isValidUser = bcrypt.compareSync(req.body.password, user.password);
       if (isValidUser) {
-        user.token = jwt.sign(user.email, process.env.JWT_SECRET);
         response = getSuccessResponse(user);
+        response.accessToken = jwt.sign(user.email, process.env.JWT_SECRET);
       } else {
         response = getFailureResponse("Invalid Credentials");
       }
@@ -38,8 +38,6 @@ exports.signUp = async function (req, res, next) {
       let userBody = req.body;
       userBody.role = "ADMIN";
       userBody.status = "A";
-      const hash = bcrypt.hashSync(req.body.password, 10);
-      userBody.password = hash;
       const user = new User(userBody);
       let signUpResponse = await user.save();
       response = getSuccessResponse(signUpResponse);

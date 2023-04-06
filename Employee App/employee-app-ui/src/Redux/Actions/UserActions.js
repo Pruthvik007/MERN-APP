@@ -9,6 +9,7 @@ const UserActions = () => {
     });
   };
   const logout = () => {
+    localStorage.removeItem("accessToken");
     dispatch({
       type: LOGOUT,
       payload: null,
