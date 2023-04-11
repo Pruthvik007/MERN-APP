@@ -1,5 +1,5 @@
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import React, { useState } from "react";
+import React from "react";
 import HomePage from "./Pages/HomePage";
 import AddEmployee from "./Pages/AddEmployee";
 import Login from "./Pages/Login";
@@ -8,16 +8,13 @@ import ViewOrUpdateEmployee from "./Pages/ViewOrUpdateEmployee";
 import AddUser from "./Pages/AddUser";
 import Header from "./Components/Header";
 import { useSelector } from "react-redux";
-import { MessageContext } from "./Helpers/Context";
 import PageNotFound from "./Pages/PageNotFound";
 const Router = () => {
   const user = useSelector((state) => {
     return state.user;
   });
-  const [message, setMessage] = useState();
 
   return (
-    <MessageContext.Provider value={{ message, setMessage }}>
       <BrowserRouter>
         {user ? (
           <>
@@ -42,7 +39,6 @@ const Router = () => {
           </Routes>
         )}
       </BrowserRouter>
-    </MessageContext.Provider>
   );
 };
 

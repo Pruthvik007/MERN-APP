@@ -8,20 +8,22 @@ const Radio = ({ label, options, fieldName, onChange, value, isEditMode }) => {
     <React.Fragment>
       <Form.Group className="mb-3 col-lg-6">
         <Form.Label htmlFor={label}>{label}</Form.Label>
-        {options.map((option) => {
-          return (
-            <Form.Check
-              key={option}
-              type="radio"
-              label={option}
-              name={fieldName}
-              value={option}
-              checked={value === option}
-              onChange={handleChange}
-              disabled={Number(isEditMode) === 0}
-            />
-          );
-        })}
+        <div className="border rounded p-1">
+          {options.map((option) => {
+            return (
+              <Form.Check
+                key={option}
+                type="radio"
+                label={option}
+                name={fieldName}
+                value={option}
+                checked={value === option}
+                onChange={handleChange}
+                disabled={Number(isEditMode) === 0}
+              />
+            );
+          })}
+        </div>
       </Form.Group>
     </React.Fragment>
   );

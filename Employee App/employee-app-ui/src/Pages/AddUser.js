@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Input from "../Components/Common/Input";
 import AuthenticationServices from "../Services/AuthenticationServices";
 import BackButton from "../Components/Common/BackButton";
+import Toast from "../Components/Common/Toast";
 const AddUser = () => {
   const authenticationService = AuthenticationServices();
   const [user, setUser] = useState({
@@ -64,13 +65,7 @@ const AddUser = () => {
           </div>
         </Card.Body>
       </Card>
-      <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={false}
-        closeOnClick
-        theme="light"
-      />
+      <Toast/>
     </div>
   );
 };

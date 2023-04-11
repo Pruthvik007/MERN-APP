@@ -5,6 +5,7 @@ import Input from "../Components/Common/Input";
 import Card from "react-bootstrap/Card";
 import AuthenticationServices from "../Services/AuthenticationServices";
 import { MessageContext } from "../Helpers/Context";
+import Toast from "../Components/Common/Toast";
 const Login = () => {
   const {setMessage}=useContext(MessageContext);
   const navigate = useNavigate();
@@ -59,13 +60,7 @@ const Login = () => {
           </div>
         </Card>
       </div>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        closeOnClick
-        theme="light"
-      />
+      <Toast/>
     </div>
   );
 };

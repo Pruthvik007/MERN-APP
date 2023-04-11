@@ -4,7 +4,6 @@ import Radio from "../Components/Common/Radio";
 import Dropdown from "../Components/Common/Dropdown";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
-import { ToastContainer, toast } from "react-toastify";
 import EmployeeValidator from "../Helpers/EmployeeValidator";
 import { useParams } from "react-router";
 import EmployeeServices from "../Services/EmployeeServices";
@@ -45,7 +44,7 @@ const ViewOrUpdateEmployee = () => {
   const updateEmployee = async () => {
     const message = await employeeService.patchEmployee(employee._id, employee);
     if (message) {
-      toast.error(message);
+      setMessage(message);
     } else {
       setMessage("Employee Details Updated Successfully");
       navigate("/");
@@ -59,7 +58,7 @@ const ViewOrUpdateEmployee = () => {
   const submit = () => {
     let errorMessage = employeeValidator.validateEmployee(employee);
     if (errorMessage !== null) {
-      toast.error(errorMessage);
+      setMessage(errorMessage);
     }
     updateEmployee();
   };
@@ -68,7 +67,7 @@ const ViewOrUpdateEmployee = () => {
     <div className="container">
       <h1 className="text-center">Employee Details</h1>
       <p>Id: {employeeId}</p>
-      <Card>
+      <Card className="p-2">
         <Row className="p-3">
           <Input
             type={"text"}
@@ -118,14 +117,6 @@ const ViewOrUpdateEmployee = () => {
             onChange={onChange}
             isEditMode={isEditMode}
           />
-          <Dropdown
-            options={["Active", "InActive"]}
-            fieldName="status"
-            label={"Status"}
-            onChange={onChange}
-            value={employee.status}
-            isEditMode={isEditMode}
-          />
           <Radio
             options={["Male", "Female"]}
             fieldName="gender"
@@ -134,23 +125,30 @@ const ViewOrUpdateEmployee = () => {
             value={employee.gender}
             isEditMode={isEditMode}
           />
+          <Dropdown
+            options={[
+              { displayName: "Active", value: "A" },
+              { displayName: "InActive", value: "I" },
+            ]}
+            fieldName="status"
+            label={"Status"}
+            onChange={onChange}
+            value={employee.status}
+            isEditMode={isEditMode}
+          />
         </Row>
-        {Number(isEditMode) !== 0 && (
-          <div className="p-2 text-center">
-            <button onClick={submit} className="btn btn-sm btn-primary">
-              Submit
-            </button>
-          </div>
-        )}
-        <BackButton />
+        <div className="d-flex flex-row justify-content-center">
+          {Number(isEditMode) !== 0 && (
+            <div className="">
+              <button onClick={submit} className="btn btn-sm btn-primary">
+                Submit
+              </button>
+            </div>
+          )}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <BackButton />
+        </div>
       </Card>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        closeOnClick
-        theme="light"
-      />
     </div>
   );
 };

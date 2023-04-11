@@ -4,12 +4,11 @@ import Radio from "../Components/Common/Radio";
 import Dropdown from "../Components/Common/Dropdown";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
-import { ToastContainer, toast } from "react-toastify";
 import EmployeeValidator from "../Helpers/EmployeeValidator";
 import { useNavigate } from "react-router";
 import EmployeeServices from "../Services/EmployeeServices";
 import { MessageContext } from "../Helpers/Context";
-import BackButton from "../Components/Common/BackButton"
+import BackButton from "../Components/Common/BackButton";
 const AddEmployee = () => {
   const { setMessage } = useContext(MessageContext);
   const employeeService = EmployeeServices();
@@ -33,11 +32,11 @@ const AddEmployee = () => {
   const submit = async () => {
     let errorMessage = employeeValidator.validateEmployee(employee);
     if (errorMessage !== null) {
-      toast.error(errorMessage);
+      setMessage(errorMessage);
     }
-    const message = await employeeService.addEmployee(employee);
-    if (message) {
-      toast.error(message);
+    const responseMessage = await employeeService.addEmployee(employee);
+    if (responseMessage) {
+      setMessage(responseMessage);
     } else {
       setMessage("Employee Added Successfully");
       navigate("/");
@@ -91,13 +90,6 @@ const AddEmployee = () => {
             value={employee.location}
             onChange={onChange}
           />
-          <Dropdown
-            options={["Active", "InActive"]}
-            fieldName="status"
-            label={"Status"}
-            onChange={onChange}
-            value={employee.status}
-          />
           <Radio
             options={["Male", "Female"]}
             fieldName="gender"
@@ -105,21 +97,25 @@ const AddEmployee = () => {
             onChange={onChange}
             value={employee.gender}
           />
+          <Dropdown
+            options={[
+              { displayName: "Active", value: "A" },
+              { displayName: "InActive", value: "I" },
+            ]}
+            fieldName="status"
+            label={"Status"}
+            onChange={onChange}
+            value={employee.status}
+          />
         </Row>
         <div className="p-2 text-center d-flex flex-row justify-content-center">
           <button onClick={submit} className="btn btn-sm btn-primary">
             Submit
-          </button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <BackButton/>
+          </button>{" "}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <BackButton />
         </div>
       </Card>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        closeOnClick
-        theme="light"
-      />
     </div>
   );
 };

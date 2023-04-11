@@ -9,9 +9,9 @@ const Dropdown = ({ options, label, onChange, fieldName, value, isEditMode }) =>
     <React.Fragment>
       <Form.Group className="col-lg-6">
         <Form.Label>{label}</Form.Label>
-        <FormSelect onChange={handleChange} value={value} disabled={Number(isEditMode) === 0}>
+        <FormSelect onChange={handleChange} value={value} disabled={Number(isEditMode) === 0} name={fieldName}>
           {options.map((option) => {
-            return <option key={option} value={option}>{option}</option>;
+            return <option key={option.value} value={option.value}>{option.displayName}</option>;
           })}
         </FormSelect>
       </Form.Group>
