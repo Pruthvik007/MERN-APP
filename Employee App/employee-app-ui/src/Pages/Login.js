@@ -12,8 +12,8 @@ const Login = () => {
   const navigate = useNavigate();
   const authenticate = AuthenticationServices();
   const [user, setUser] = useState({
-    email: "",
-    password: "",
+    email: "admin@admin.com",
+    password: "123123",
   });
   const onUserChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
