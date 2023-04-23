@@ -12,12 +12,12 @@ const Radio = ({ label, options, fieldName, onChange, value, isEditMode }) => {
           {options.map((option) => {
             return (
               <Form.Check
-                key={option}
+                key={option.value}
                 type="radio"
-                label={option}
+                label={option.displayName}
                 name={fieldName}
-                value={option}
-                checked={value === option}
+                value={option.value}
+                checked={value === option.value}
                 onChange={handleChange}
                 disabled={Number(isEditMode) === 0}
               />

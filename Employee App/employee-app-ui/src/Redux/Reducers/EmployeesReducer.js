@@ -14,7 +14,7 @@ const EmployeesReducer = (state = [], action) => {
       return state.filter((employee) => employee._id !== action.payload);
     case UPDATE_EMPLOYEE:
       return state.map((employee) =>
-        employee.id === action.payload.id ? action.payload : employee
+        employee._id === action.payload._id ? action.payload : employee
       );
     default:
       return state;

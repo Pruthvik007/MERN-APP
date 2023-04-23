@@ -9,7 +9,11 @@ import { useNavigate } from "react-router";
 import EmployeeServices from "../Services/EmployeeServices";
 import { MessageContext } from "../Helpers/Context";
 import BackButton from "../Components/Common/BackButton";
+import Spinner from "../Components/Common/Spinner";
+
 const AddEmployee = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const { setMessage } = useContext(MessageContext);
   const employeeService = EmployeeServices();
   const navigate = useNavigate();
@@ -32,90 +36,101 @@ const AddEmployee = () => {
   const submit = async () => {
     let errorMessage = employeeValidator.validateEmployee(employee);
     if (errorMessage !== null) {
-      setMessage(errorMessage);
+      setMessage({ messageText: errorMessage, messageType: "ERROR" });
     }
+    setIsLoading(true);
     const responseMessage = await employeeService.addEmployee(employee);
+    setIsLoading(false);
     if (responseMessage) {
-      setMessage(responseMessage);
+      setMessage({ messageText: responseMessage, messageType: "ERROR" });
     } else {
-      setMessage("Employee Added Successfully");
+      setMessage({
+        messageText: "Employee Added Successfully",
+        messageType: "SUCCESS",
+      });
       navigate("/");
     }
   };
 
   return (
     <div className="container">
-      <h1 className="text-center">Add Employee</h1>
-      <Card>
-        <Row className="p-3">
-          <Input
-            type={"text"}
-            label={"Name"}
-            fieldName={"name"}
-            onChange={onChange}
-            value={employee.name}
-          />
-          <Input
-            type={"text"}
-            label={"Email"}
-            fieldName={"email"}
-            onChange={onChange}
-            value={employee.email}
-          />
-          <Input
-            type={"text"}
-            label={"Role"}
-            fieldName={"role"}
-            onChange={onChange}
-            value={employee.role}
-          />
-          <Input
-            type={"date"}
-            label={"Date Of Joining"}
-            fieldName={"doj"}
-            onChange={onChange}
-            value={employee.doj}
-          />
-          <Input
-            type={"text"}
-            fieldName={"mobile"}
-            label={"Mobile Number"}
-            value={employee.mobile}
-            onChange={onChange}
-          />
-          <Input
-            type={"text"}
-            fieldName={"location"}
-            label={"Location"}
-            value={employee.location}
-            onChange={onChange}
-          />
-          <Radio
-            options={["Male", "Female"]}
-            fieldName="gender"
-            label={"Gender"}
-            onChange={onChange}
-            value={employee.gender}
-          />
-          <Dropdown
-            options={[
-              { displayName: "Active", value: "A" },
-              { displayName: "InActive", value: "I" },
-            ]}
-            fieldName="status"
-            label={"Status"}
-            onChange={onChange}
-            value={employee.status}
-          />
-        </Row>
-        <div className="p-2 text-center d-flex flex-row justify-content-center">
-          <button onClick={submit} className="btn btn-sm btn-primary">
-            Submit
-          </button>{" "}
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <BackButton />
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <div>
+          <h1 className="text-center">Add Employee</h1>
+          <Card>
+            <Row className="p-3">
+              <Input
+                type={"text"}
+                label={"Name"}
+                fieldName={"name"}
+                onChange={onChange}
+                value={employee.name}
+              />
+              <Input
+                type={"text"}
+                label={"Email"}
+                fieldName={"email"}
+                onChange={onChange}
+                value={employee.email}
+              />
+              <Input
+                type={"text"}
+                label={"Role"}
+                fieldName={"role"}
+                onChange={onChange}
+                value={employee.role}
+              />
+              <Input
+                type={"date"}
+                label={"Date Of Joining"}
+                fieldName={"doj"}
+                onChange={onChange}
+                value={employee.doj}
+              />
+              <Input
+                type={"text"}
+                fieldName={"mobile"}
+                label={"Mobile Number"}
+                value={employee.mobile}
+                onChange={onChange}
+              />
+              <Input
+                type={"text"}
+                fieldName={"location"}
+                label={"Location"}
+                value={employee.location}
+                onChange={onChange}
+              />
+              <Radio
+                options={[{ displayName: "Male", value: "M" }, { displayName: "Female", value: "F" }]}
+                fieldName="gender"
+                label={"Gender"}
+                onChange={onChange}
+                value={employee.gender}
+              />
+              <Dropdown
+                options={[
+                  { displayName: "Active", value: "A" },
+                  { displayName: "InActive", value: "I" },
+                ]}
+                fieldName="status"
+                label={"Status"}
+                onChange={onChange}
+                value={employee.status}
+              />
+            </Row>
+            <div className="p-2 text-center d-flex flex-row justify-content-center">
+              <button onClick={submit} className="btn btn-sm btn-primary">
+                Submit
+              </button>{" "}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <BackButton />
+            </div>
+          </Card>
         </div>
-      </Card>
+      )}
     </div>
   );
 };

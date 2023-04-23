@@ -3,7 +3,11 @@ import { useSelector } from "react-redux";
 import EmployeeList from "../Components/EmployeeList";
 import Pagination from "../Components/Common/Pagination";
 import EmployeeServices from "../Services/EmployeeServices";
+import Spinner from "../Components/Common/Spinner";
+
 const HomePage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const employeeService = EmployeeServices();
   const employeeData = useSelector((state) => {
     return state.employees;
@@ -16,10 +20,16 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    if (employeeData.length === 0) {
-      employeeService.getEmployees();
+    if(employeeData?.length===0) {
+      getEmployees();
     }
   }, []);
+
+  const getEmployees = async () => {
+    setIsLoading(true);
+    await employeeService.getEmployees();
+    setIsLoading(false);
+  };
 
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -33,12 +43,20 @@ const HomePage = () => {
 
   return (
     <div>
-      <div>
-        <EmployeeList employees={data} />
-      </div>
-      {data.length>itemsPerPage && <div className="d-flex flex-row-reverse p-3">
-        <Pagination pageCount={pageCount} onChange={onChange} />
-      </div>}
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <div>
+          <div>
+            <EmployeeList employees={data} />
+          </div>
+          {data.length > itemsPerPage && (
+            <div className="d-flex flex-row-reverse p-3">
+              <Pagination pageCount={pageCount} onChange={onChange} />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

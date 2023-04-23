@@ -2,18 +2,25 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import EmployeeServices from "../Services/EmployeeServices";
 import { MessageContext } from "../Helpers/Context";
+import Spinner from "./Common/Spinner";
 
 const EmployeeList = ({ employees }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [modalDetails, setModalDetails] = useState({});
   const { setMessage } = useContext(MessageContext);
   const employeeService = EmployeeServices();
   const navigate = useNavigate();
-  const deleteEmployee = (id) => {
-    const message = employeeService.deleteEmployee(id);
+  const deleteEmployee = async (id) => {
+    setIsLoading(true);
+    const message = await employeeService.deleteEmployee(id);
+    setIsLoading(false);
     if (message) {
-      setMessage(message);
+      setMessage({ messageText: message, messageType: "ERROR" });
     } else {
-      setMessage("Employee Deleted Successfully");
+      setMessage({
+        messageText: "Employee Deleted Successfully",
+        messageType: "SUCCESS",
+      });
     }
   };
 
@@ -38,64 +45,68 @@ const EmployeeList = ({ employees }) => {
             <th scope="col">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          {employees.map((employee, index) => {
-            return (
-              <tr key={employee._id}>
-                <th scope="row">{index+1}</th>
-                <td>{employee.name}</td>
-                <td>{employee.email}</td>
-                <td>{employee.location}</td>
-                <td>
-                  <div className="d-flex flex-row justify-content-between w-50">
-                    <button
-                      type="button"
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title="View"
-                      className="btn btn-outline-secondary"
-                      onClick={() => {
-                        navigate(`/employee/${employee._id}/${0}`);
-                      }}
-                    >
-                      <i className="fa fa-solid fa-eye"></i>
-                    </button>
-                    <button
-                      type="button"
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title="Edit"
-                      className="btn btn-outline-warning"
-                      onClick={() => {
-                        navigate(`/employee/${employee._id}/${1}`);
-                      }}
-                    >
-                      <i className="fa fa-solid fa-pencil"></i>
-                    </button>
-                    <button
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title="Delete"
-                      type="button"
-                      className="btn btn-danger"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      onClick={() => {
-                        displayModal(
-                          "Delete Employee ?",
-                          `Do U Want To Delete Employee: ${employee.name}`,
-                          employee._id
-                        );
-                      }}
-                    >
-                      <i className="fa fa-solid fa-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <tbody>
+            {employees.map((employee, index) => {
+              return (
+                <tr key={employee._id}>
+                  <th scope="row">{index + 1}</th>
+                  <td>{employee.name}</td>
+                  <td>{employee.email}</td>
+                  <td>{employee.location}</td>
+                  <td>
+                    <div className="d-flex flex-row justify-content-between w-50">
+                      <button
+                        type="button"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="View"
+                        className="btn btn-outline-secondary"
+                        onClick={() => {
+                          navigate(`/employee/${employee._id}/${0}`);
+                        }}
+                      >
+                        <i className="fa fa-solid fa-eye"></i>
+                      </button>
+                      <button
+                        type="button"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Edit"
+                        className="btn btn-outline-warning"
+                        onClick={() => {
+                          navigate(`/employee/${employee._id}/${1}`);
+                        }}
+                      >
+                        <i className="fa fa-solid fa-pencil"></i>
+                      </button>
+                      <button
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Delete"
+                        type="button"
+                        className="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        onClick={() => {
+                          displayModal(
+                            "Delete Employee ?",
+                            `Do U Want To Delete Employee: ${employee.name}`,
+                            employee._id
+                          );
+                        }}
+                      >
+                        <i className="fa fa-solid fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        )}
       </table>
       <div id="exampleModal" className="modal" tabIndex="-1" role="dialog">
         <div className="modal-dialog" role="document">

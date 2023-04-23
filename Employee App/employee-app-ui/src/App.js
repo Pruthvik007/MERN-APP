@@ -8,12 +8,19 @@ import { toast } from "react-toastify";
 import Toast from "./Components/Common/Toast";
 
 function App() {
-  const [message, setMessage] = useState();
+  const [message, setMessage] = useState({ messageText: null, messageType: "" });
   useEffect(() => {
-    toast.success(message, {
-      toastId: "success1",
-    });
-    setMessage(null);
+    if (message.messageText) {
+      if (message.messageType === "SUCCESS") {
+        toast.success(message.messageText, {
+          toastId: "success1",
+        });
+      } else {
+        toast.error(message.messageText, {
+          toastId: "failure1",
+        });
+      }
+    }
   }, [message]);
   return (
     <div className="App">
