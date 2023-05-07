@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = process.env.REACT_APP_SERVER_BASE_URL;
+const BASE_URL = process.env.REACT_APP_SERVER_BASE_URL || "https://employee-server-et8k.onrender.com/";
 export const fetch = async (ENDPOINT, METHOD, DATA) => {
   const options = {
     url: `${BASE_URL}${ENDPOINT}`,
