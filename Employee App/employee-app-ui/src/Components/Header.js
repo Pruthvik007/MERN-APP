@@ -1,17 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../CSS/Header.css";
 import UserActions from "../Redux/Actions/UserActions";
 const Header = () => {
   const userActions = UserActions();
   return (
-    <div>
+    <div className="">
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <button
           className="navbar-toggler"
           type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
           aria-controls="navbarNav"
           aria-expanded="false"
           aria-label="Toggle navigation"
@@ -19,7 +18,7 @@ const Header = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div
-          className="collapse navbar-collapse d-flex justify-content-between"
+          className="collapse navbar-collapse"
           id="navbarNav"
         >
           <ul className="navbar-nav">
