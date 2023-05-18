@@ -5,15 +5,25 @@ import AddEmployee from "./Pages/AddEmployee";
 import Login from "./Pages/Login";
 import ViewOrUpdateEmployee from "./Pages/ViewOrUpdateEmployee";
 import AddUser from "./Pages/AddUser";
-import Header from "./Components/Header";
+import Header from "./Components/Common/Header";
 import { useSelector } from "react-redux";
 import PageNotFound from "./Pages/PageNotFound";
+import { ThemeProvider, createTheme } from "@mui/material";
+import { useTheme } from "./Helpers/Context";
 const Router = () => {
+  const { isDarkTheme } = useTheme();
   const user = useSelector((state) => {
     return state.user;
   });
 
+  const darkTheme = createTheme({
+    palette: {
+      mode: isDarkTheme ? "dark" : "light",
+    },
+  });
+
   return (
+    <ThemeProvider theme={darkTheme}>
       <BrowserRouter>
         {user ? (
           <>
@@ -21,10 +31,9 @@ const Router = () => {
             <Routes>
               <Route path="/*" element={<PageNotFound />} />
               <Route path="/" element={<HomePage />} />
-              <Route path="/addUser" element={<AddUser />} />
+              <Route path="/add-user" element={<AddUser />} />
               <Route path="/home" element={<HomePage />} />
-              <Route path="/addEmployee" element={<AddEmployee />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/add-employee" element={<AddEmployee />} />
               <Route
                 path="/employee/:employeeId/:isEditMode"
                 element={<ViewOrUpdateEmployee />}
@@ -37,6 +46,7 @@ const Router = () => {
           </Routes>
         )}
       </BrowserRouter>
+    </ThemeProvider>
   );
 };
 

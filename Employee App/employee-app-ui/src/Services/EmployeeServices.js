@@ -1,4 +1,4 @@
-import { fetch } from "../Utils/Axios";
+import { fetchApi } from "../Utils/Fetch";
 import EmployeesActions from "../Redux/Actions/EmployeesActions";
 import Validator from "../Helpers/Validator";
 
@@ -7,7 +7,7 @@ const EmployeeServices = () => {
   const employeeActions = EmployeesActions();
 
   const addEmployee = async (employee) => {
-    return fetch("employee/", "POST", employee)
+    return fetchApi("employee/", "POST", employee)
       .then((response) => {
         if (validator.isSuccess(response)) {
           employeeActions.addEmployee(response.data);
@@ -21,7 +21,7 @@ const EmployeeServices = () => {
       });
   };
   const getEmployees = async () => {
-    return fetch("employee/", "GET")
+    return fetchApi("employee/")
       .then((response) => {
         if (validator.isSuccess(response)) {
           employeeActions.getEmployees(response.data);
@@ -35,7 +35,7 @@ const EmployeeServices = () => {
       });
   };
   const getEmployee = async (id) => {
-    return fetch(`employee/${id}`, "GET")
+    return fetchApi(`employee/${id}`)
       .then((response) => {
         return response;
       })
@@ -45,7 +45,7 @@ const EmployeeServices = () => {
       });
   };
   const deleteEmployee = async (id) => {
-    return fetch(`employee/${id}`, "DELETE")
+    return fetchApi(`employee/${id}`, "DELETE")
       .then((response) => {
         if (validator.isSuccess(response)) {
           employeeActions.deleteEmployee(id);
@@ -59,7 +59,7 @@ const EmployeeServices = () => {
       });
   };
   const updateEmployee = async (user) => {
-    return await fetch("employee/", "PUT",user)
+    return await fetchApi("employee/", "PUT", user)
       .then((response) => {
         if (validator.isSuccess(response)) {
           employeeActions.updateEmployee(response.data);
@@ -72,8 +72,8 @@ const EmployeeServices = () => {
         console.log(error);
       });
   };
-  const patchEmployee = async (id,user) => {
-    return await fetch(`employee/${id}`, "PATCH",user)
+  const patchEmployee = async (id, user) => {
+    return await fetchApi(`employee/${id}`, "PATCH", user)
       .then((response) => {
         if (validator.isSuccess(response)) {
           employeeActions.updateEmployee(response.data);

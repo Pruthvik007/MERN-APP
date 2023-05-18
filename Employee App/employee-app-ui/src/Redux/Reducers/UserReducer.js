@@ -1,10 +1,10 @@
-import { LOGIN, LOGOUT } from "../../Constants/ReduxActionTypes";
+import { ACTION } from "../../Constants/ReduxActionTypes";
 
 const UserReducer = (state = null, action) => {
   switch (action.type) {
-    case LOGIN:
+    case ACTION.LOGIN:
       return action.payload;
-    case LOGOUT:
+    case ACTION.LOGOUT:
       return null;
     default:
       return state;

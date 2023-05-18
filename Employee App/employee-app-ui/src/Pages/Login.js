@@ -1,75 +1,34 @@
-import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Input from "../Components/Common/Input";
-import Spinner from "../Components/Common/Spinner";
-import Card from "react-bootstrap/Card";
+import React from "react";
+import FormBuilder from "../Components/Common/FormBuilder";
+import { generateLoginForm } from "../Helpers/FormHelper";
+import { useBackDrop } from "../Helpers/Context";
+import { useAlert } from "../Helpers/Context";
+import { useNavigate } from "react-router";
 import AuthenticationServices from "../Services/AuthenticationServices";
-import { MessageContext } from "../Helpers/Context";
+import { Typography } from "@mui/material";
 const Login = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { setMessage } = useContext(MessageContext);
+  const formItems = generateLoginForm();
   const navigate = useNavigate();
+  const { alert } = useAlert();
+  const { setIsLoading } = useBackDrop();
   const authenticate = AuthenticationServices();
-  const [user, setUser] = useState({
-    email: "admin@admin.com",
-    password: "123123",
-  });
-  const onUserChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
-  const login = async (e) => {
-    e.preventDefault();
+  const login = async (user) => {
     setIsLoading(true);
     const message = await authenticate.login(user);
     setIsLoading(false);
     if (message) {
-      setMessage({ messageText: message, messageType: "ERROR" });
+      alert(message);
     } else {
-      setMessage({ messageText: "Login Successful", messageType: "SUCCESS" });
-      navigate("/home");
+      alert("Login Successful", "success");
+      navigate("/");
     }
   };
+
   return (
-    <div className="text-center">
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <div>
-          <h1>Login</h1>
-          <div className="container">
-            <Card>
-              <div className="login-form p-5 d-flex flex-column align-items-center">
-                <Input
-                  type="text"
-                  fieldName="email"
-                  label="Email"
-                  placeholder="Enter your email address"
-                  value={user.email}
-                  onChange={onUserChange}
-                />
-                <Input
-                  type="password"
-                  fieldName="password"
-                  label="Password"
-                  placeholder="Enter your password"
-                  value={user.password}
-                  onChange={onUserChange}
-                />
-                <button
-                  className="btn btn-sm btn-primary"
-                  onClick={(e) => {
-                    login(e);
-                  }}
-                >
-                  Submit
-                </button>
-              </div>
-            </Card>
-          </div>
-        </div>
-      )}
-    </div>
+    <>
+      <Typography variant="h4">Login</Typography>
+      <FormBuilder formItems={formItems} onSubmit={login} />
+    </>
   );
 };
 

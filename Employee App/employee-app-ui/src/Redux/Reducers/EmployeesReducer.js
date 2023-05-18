@@ -1,18 +1,13 @@
-import {
-  GET_EMPLOYEES,
-  ADD_EMPLOYEE,
-  DELETE_EMPLOYEE,
-  UPDATE_EMPLOYEE,
-} from "../../Constants/ReduxActionTypes";
+import { ACTION } from "../../Constants/ReduxActionTypes";
 const EmployeesReducer = (state = [], action) => {
   switch (action.type) {
-    case GET_EMPLOYEES:
+    case ACTION.GET_EMPLOYEES:
       return action.payload;
-    case ADD_EMPLOYEE:
+    case ACTION.ADD_EMPLOYEE:
       return [...state, action.payload];
-    case DELETE_EMPLOYEE:
+    case ACTION.DELETE_EMPLOYEE:
       return state.filter((employee) => employee._id !== action.payload);
-    case UPDATE_EMPLOYEE:
+    case ACTION.UPDATE_EMPLOYEE:
       return state.map((employee) =>
         employee._id === action.payload._id ? action.payload : employee
       );

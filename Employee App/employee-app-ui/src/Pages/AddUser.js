@@ -1,86 +1,45 @@
-import React, { useContext, useState } from "react";
-import Card from "react-bootstrap/Card";
-import Input from "../Components/Common/Input";
+import React from "react";
+import { generateUserForm } from "../Helpers/FormHelper";
+import FormBuilder from "../Components/Common/FormBuilder";
+import { Typography } from "@mui/material";
+import Validator from "../Helpers/Validator";
+import { useAlert } from "../Helpers/Context";
 import AuthenticationServices from "../Services/AuthenticationServices";
+import { useBackDrop } from "../Helpers/Context";
+import { useNavigate } from "react-router";
 import BackButton from "../Components/Common/BackButton";
-import Spinner from "../Components/Common/Spinner";
-import { MessageContext } from "../Helpers/Context";
-
 const AddUser = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { setMessage } = useContext(MessageContext);
-  const authenticationService = AuthenticationServices();
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-
-  const onUserChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    const message = await authenticationService.signUp(user);
-    setIsLoading(false);
-    if (message) {
-      setMessage({ messageText: message, messageType: "ERROR" });
+  const navigate = useNavigate();
+  const service = AuthenticationServices();
+  const { alert } = useAlert();
+  const { setIsLoading } = useBackDrop();
+  const validator = Validator();
+  const onSubmit = (user) => {
+    const errorMessage = validator.validateUser(user);
+    if (errorMessage) {
+      alert(errorMessage);
     } else {
-      setMessage({
-        messageText: "User Added Successfully",
-        messageType: "SUCCESS",
-      });
-      setUser({ name: "", email: "", password: "" });
+      addUser(user);
     }
   };
-
+  const addUser = async (user) => {
+    setIsLoading(true);
+    const responseMessage = await service.signUp(user);
+    setIsLoading(false);
+    if (responseMessage) {
+      alert(responseMessage);
+    } else {
+      alert("User Added SuccessFully", "success");
+      navigate("/");
+    }
+  };
+  let formItems = generateUserForm();
   return (
-    <div className="text-center">
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <div>
-          <Card>
-            <Card.Header>
-              <h2>Create User</h2>
-            </Card.Header>
-            <Card.Body className=" d-flex flex-column justify-content-center align-items-center">
-              <Input
-                type={"text"}
-                fieldName={"name"}
-                label={"Name"}
-                onChange={onUserChange}
-                value={user.name}
-              />
-              <Input
-                type={"text"}
-                fieldName={"email"}
-                label={"Email"}
-                onChange={onUserChange}
-                value={user.email}
-              />
-              <Input
-                type={"password"}
-                fieldName={"password"}
-                label={"Password"}
-                onChange={onUserChange}
-                value={user.password}
-              />
-              <div className="d-flex flex-row justify-content-center">
-                <button className="btn btn-sm btn-primary" onClick={onSubmit}>
-                  Create
-                </button>{" "}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <BackButton />
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-      )}
-    </div>
+    <>
+      <Typography variant="h4">Add User</Typography>
+      <FormBuilder formItems={formItems} onSubmit={(user) => onSubmit(user)} />
+      <BackButton />
+    </>
   );
 };
 

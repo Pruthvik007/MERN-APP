@@ -1,4 +1,4 @@
-import { fetch } from "../Utils/Axios";
+import { fetchApi } from "../Utils/Fetch";
 import Validator from "../Helpers/Validator";
 import UserActions from "../Redux/Actions/UserActions";
 import bcrypt from "bcryptjs";
@@ -7,7 +7,7 @@ const AuthenticationServices = () => {
   const userActions = UserActions();
   const validator = Validator();
   const login = async (user) => {
-    return fetch("login", "POST", user)
+    return fetchApi("login", "POST", user)
       .then((response) => {
         if (validator.isSuccess(response)) {
           localStorage.setItem("accessToken", response.accessToken);
@@ -24,7 +24,7 @@ const AuthenticationServices = () => {
   };
   const signUp = async (user) => {
     user.password = bcrypt.hashSync(user.password, 10);
-    return fetch("signup", "POST", user)
+    return fetchApi("signup", "POST", user)
       .then((response) => {
         if (validator.isSuccess(response)) {
           return null;

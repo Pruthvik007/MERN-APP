@@ -1,154 +1,132 @@
-import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import EmployeeServices from "../Services/EmployeeServices";
-import { MessageContext } from "../Helpers/Context";
-import Spinner from "./Common/Spinner";
-
-const EmployeeList = ({ employees }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [modalDetails, setModalDetails] = useState({});
-  const { setMessage } = useContext(MessageContext);
-  const employeeService = EmployeeServices();
+import { Button, Container, Tooltip } from "@mui/material";
+import { useBackDrop } from "../Helpers/Context";
+import { useAlert } from "../Helpers/Context";
+import { useNavigate } from "react-router";
+import Modal from "./Common/MUI/Modal";
+const EmployeeList = () => {
+  const { alert } = useAlert();
+  const { setIsLoading } = useBackDrop();
+  const employeeServices = EmployeeServices();
   const navigate = useNavigate();
-  const deleteEmployee = async (id) => {
-    setIsLoading(true);
-    const message = await employeeService.deleteEmployee(id);
-    setIsLoading(false);
-    if (message) {
-      setMessage({ messageText: message, messageType: "ERROR" });
-    } else {
-      setMessage({
-        messageText: "Employee Deleted Successfully",
-        messageType: "SUCCESS",
-      });
+  const employees = useSelector((state) => state.employees);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [employeeForDeletion, setEmployeeForDeletion] = useState();
+  useEffect(() => {
+    getEmployees();
+  }, []);
+
+  const getEmployees = async () => {
+    if (employees.length === 0) {
+      setIsLoading(true);
+      const message = await employeeServices.getEmployees();
+      if (message) {
+        alert(message);
+      }
+      setIsLoading(false);
     }
   };
 
-  const displayModal = (title, content, employeeId) => {
-    setModalDetails({
-      content: content,
-      title: title,
-      onConfirm: deleteEmployee,
-      employeeId: employeeId,
-    });
+  const deleteEmployee = async (id) => {
+    setIsLoading(true);
+    const responseMessage = await employeeServices.deleteEmployee(id);
+    setIsLoading(false);
+    if (responseMessage) {
+      alert(responseMessage);
+    } else {
+      alert("Employee Deleted Successfully", "success");
+    }
+  };
+
+  const DeleteConfirmation = () => {
+    return (
+      <Modal
+        title={"Are You Sure You Want to Delete The Employee ?"}
+        content={`By Continuing, Employment Details of
+          ${employeeForDeletion?.name}
+          Will Be Deleted Permanently. This Cannot be Reverted.`}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        onConfirm={() => {
+          deleteEmployee(employeeForDeletion?._id);
+        }}
+      />
+    );
   };
 
   return (
-    <div>
-      <table className="table">
-        <thead>
-          <tr>
-            <th scope="col">S.No</th>
-            <th scope="col">Employee Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Location</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <tbody>
-            {employees.map((employee, index) => {
-              return (
-                <tr key={employee._id}>
-                  <th scope="row">{index + 1}</th>
-                  <td>{employee.name}</td>
-                  <td>{employee.email}</td>
-                  <td>{employee.location}</td>
-                  <td>
-                    <div className="d-flex flex-row justify-content-between w-50">
-                      <button
-                        type="button"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title="View"
-                        className="btn btn-outline-secondary"
-                        onClick={() => {
-                          navigate(`/employee/${employee._id}/${0}`);
-                        }}
-                      >
-                        <i className="fa fa-solid fa-eye"></i>
-                      </button>
-                      <button
-                        type="button"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title="Edit"
-                        className="btn btn-outline-warning"
-                        onClick={() => {
-                          navigate(`/employee/${employee._id}/${1}`);
-                        }}
-                      >
-                        <i className="fa fa-solid fa-pencil"></i>
-                      </button>
-                      <button
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title="Delete"
-                        type="button"
-                        className="btn btn-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"
-                        onClick={() => {
-                          displayModal(
-                            "Delete Employee ?",
-                            `Do U Want To Delete Employee: ${employee.name}`,
-                            employee._id
-                          );
-                        }}
-                      >
-                        <i className="fa fa-solid fa-trash"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        )}
-      </table>
-      <div id="exampleModal" className="modal" tabIndex="-1" role="dialog">
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">{modalDetails.title}</h5>
-              <button
-                type="button"
-                className="close btn btn-secondary"
-                data-bs-dismiss="modal"
-                aria-label="Close"
+    <Container>
+      <DeleteConfirmation />
+      <TableContainer component={Paper}>
+        <Table
+          sx={{ minWidth: 650, overflowX: "auto" }}
+          aria-label="a dense table"
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell>S.no</TableCell>
+              <TableCell align="center">Employee Name</TableCell>
+              <TableCell align="center">Email</TableCell>
+              <TableCell align="center">Location</TableCell>
+              <TableCell align="center">Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {employees?.map((employee, index) => (
+              <TableRow
+                key={employee._id}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <p>{modalDetails.content}</p>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-danger"
-                data-bs-dismiss="modal"
-                onClick={(e) => {
-                  e.preventDefault();
-                  modalDetails.onConfirm(modalDetails.employeeId);
-                }}
-              >
-                Confirm
-              </button>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                <TableCell component="th" scope="row">
+                  {index + 1}
+                </TableCell>
+                <TableCell align="center">{employee.name}</TableCell>
+                <TableCell align="center">{employee.email}</TableCell>
+                <TableCell align="center">{employee.location}</TableCell>
+                <TableCell align="center">
+                  <Button
+                    onClick={() => navigate(`/employee/${employee._id}/0`)}
+                  >
+                    <Tooltip title="View">
+                      <RemoveRedEyeIcon />
+                    </Tooltip>
+                  </Button>
+                  <Button
+                    onClick={() => navigate(`/employee/${employee._id}/1`)}
+                  >
+                    <Tooltip title="Edit">
+                      <ModeEditIcon />
+                    </Tooltip>
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setEmployeeForDeletion(employee);
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    <Tooltip title="Delete">
+                      <DeleteIcon />
+                    </Tooltip>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
   );
 };
 

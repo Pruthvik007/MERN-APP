@@ -1,17 +1,17 @@
-import { LOGIN, LOGOUT } from "../../Constants/ReduxActionTypes";
+import { ACTION } from "../../Constants/ReduxActionTypes";
 import { useDispatch } from "react-redux";
 const UserActions = () => {
   const dispatch = useDispatch();
   const login = (payload) => {
     dispatch({
-      type: LOGIN,
+      type: ACTION.LOGIN,
       payload: payload,
     });
   };
   const logout = () => {
     localStorage.removeItem("accessToken");
     dispatch({
-      type: LOGOUT,
+      type: ACTION.LOGOUT,
       payload: null,
     });
   };

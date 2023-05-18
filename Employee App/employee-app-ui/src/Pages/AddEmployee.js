@@ -1,137 +1,51 @@
-import React, { useContext, useState } from "react";
-import Input from "../Components/Common/Input";
-import Radio from "../Components/Common/Radio";
-import Dropdown from "../Components/Common/Dropdown";
-import Card from "react-bootstrap/Card";
-import Row from "react-bootstrap/Row";
-import EmployeeValidator from "../Helpers/EmployeeValidator";
-import { useNavigate } from "react-router";
+import React from "react";
+import FormBuilder from "../Components/Common/FormBuilder";
+import { generateEmployeeForm } from "../Helpers/FormHelper";
+import { Box, Typography } from "@mui/material";
 import EmployeeServices from "../Services/EmployeeServices";
-import { MessageContext } from "../Helpers/Context";
+import Validator from "../Helpers/Validator";
+import { useAlert, useBackDrop } from "../Helpers/Context";
+import { useNavigate } from "react-router";
 import BackButton from "../Components/Common/BackButton";
-import Spinner from "../Components/Common/Spinner";
-
 const AddEmployee = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { setMessage } = useContext(MessageContext);
-  const employeeService = EmployeeServices();
+  const { alert } = useAlert();
+  const { setIsLoading } = useBackDrop();
   const navigate = useNavigate();
-  const employeeValidator = EmployeeValidator();
-  const [employee, setEmployee] = useState({
-    name: "",
-    email: "",
-    role: "",
-    doj: "",
-    gender: "",
-    mobile: "",
-    location: "",
-    status: "Active",
-  });
+  const service = EmployeeServices();
+  const validator = Validator();
+  let formItems = generateEmployeeForm();
 
-  const onChange = (e) => {
-    setEmployee({ ...employee, [e.target.name]: e.target.value });
+  const onSubmit = (employee) => {
+    let errorMessage = validator.validateEmployee(employee);
+    if (errorMessage) {
+      alert(errorMessage);
+    } else {
+      addEmployee(employee);
+    }
   };
 
-  const submit = async () => {
-    let errorMessage = employeeValidator.validateEmployee(employee);
-    if (errorMessage !== null) {
-      setMessage({ messageText: errorMessage, messageType: "ERROR" });
-    }
+  const addEmployee = async (employee) => {
     setIsLoading(true);
-    const responseMessage = await employeeService.addEmployee(employee);
+    const responseMessage = await service.addEmployee(employee);
     setIsLoading(false);
     if (responseMessage) {
-      setMessage({ messageText: responseMessage, messageType: "ERROR" });
+      alert(responseMessage);
     } else {
-      setMessage({
-        messageText: "Employee Added Successfully",
-        messageType: "SUCCESS",
-      });
+      alert("Employee Added Successfully", "success");
       navigate("/");
     }
   };
 
   return (
-    <div className="container">
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <div>
-          <h1 className="text-center">Add Employee</h1>
-          <Card>
-            <Row className="p-3">
-              <Input
-                type={"text"}
-                label={"Name"}
-                fieldName={"name"}
-                onChange={onChange}
-                value={employee.name}
-              />
-              <Input
-                type={"text"}
-                label={"Email"}
-                fieldName={"email"}
-                onChange={onChange}
-                value={employee.email}
-              />
-              <Input
-                type={"text"}
-                label={"Role"}
-                fieldName={"role"}
-                onChange={onChange}
-                value={employee.role}
-              />
-              <Input
-                type={"date"}
-                label={"Date Of Joining"}
-                fieldName={"doj"}
-                onChange={onChange}
-                value={employee.doj}
-              />
-              <Input
-                type={"text"}
-                fieldName={"mobile"}
-                label={"Mobile Number"}
-                value={employee.mobile}
-                onChange={onChange}
-              />
-              <Input
-                type={"text"}
-                fieldName={"location"}
-                label={"Location"}
-                value={employee.location}
-                onChange={onChange}
-              />
-              <Radio
-                options={[{ displayName: "Male", value: "M" }, { displayName: "Female", value: "F" }]}
-                fieldName="gender"
-                label={"Gender"}
-                onChange={onChange}
-                value={employee.gender}
-              />
-              <Dropdown
-                options={[
-                  { displayName: "Active", value: "A" },
-                  { displayName: "InActive", value: "I" },
-                ]}
-                fieldName="status"
-                label={"Status"}
-                onChange={onChange}
-                value={employee.status}
-              />
-            </Row>
-            <div className="p-2 text-center d-flex flex-row justify-content-center">
-              <button onClick={submit} className="btn btn-sm btn-primary">
-                Submit
-              </button>{" "}
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <BackButton />
-            </div>
-          </Card>
-        </div>
-      )}
-    </div>
+    <>
+      <Typography variant="h4">Add Employee</Typography>
+      <FormBuilder
+        formItems={formItems}
+        onSubmit={(formValue) => onSubmit(formValue)}
+        isFormDisabled={false}
+      />
+      <BackButton />
+    </>
   );
 };
 
