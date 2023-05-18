@@ -27,7 +27,11 @@ const Login = () => {
   return (
     <>
       <Typography variant="h4">Login</Typography>
-      <FormBuilder formItems={formItems} onSubmit={login} />
+      <FormBuilder
+        details={{ email: "admin@admin.com", password: "123123" }}
+        formItems={formItems}
+        onSubmit={login}
+      />
     </>
   );
 };
