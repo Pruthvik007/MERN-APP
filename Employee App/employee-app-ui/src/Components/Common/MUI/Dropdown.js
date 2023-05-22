@@ -16,7 +16,7 @@ const Dropdown = ({
   };
   return (
     <>
-      <FormControl disabled={isDisabled} sx={{ m: 1, minWidth: 120 }}>
+      <FormControl disabled={isDisabled} sx={{ minWidth: 120, width: "100%" }}>
         <InputLabel>{label}</InputLabel>
         <Select value={value[fieldName]} onChange={handleChange} label={label}>
           <MenuItem value="None">

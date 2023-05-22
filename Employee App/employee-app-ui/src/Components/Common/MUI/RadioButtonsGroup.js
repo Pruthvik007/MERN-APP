@@ -18,7 +18,13 @@ const RadioButtonsGroup = ({
     setValue({ ...value, [fieldName]: event.target.value });
   };
   return (
-    <FormControl disabled={isDisabled}>
+    <FormControl
+      disabled={isDisabled}
+      sx={{
+        minWidth: 120,
+        width: "100%",
+      }}
+    >
       <FormLabel id="demo-radio-buttons-group-label">{label}</FormLabel>
       <RadioGroup
         aria-labelledby="demo-radio-buttons-group-label"
@@ -26,7 +32,12 @@ const RadioButtonsGroup = ({
         value={value[fieldName]}
         onChange={handleChange}
       >
-        <Box sx={{ display: "flex" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           {options?.map((option) => {
             return (
               <FormControlLabel

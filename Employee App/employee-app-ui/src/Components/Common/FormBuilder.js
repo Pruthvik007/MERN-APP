@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Input from "./MUI/Input";
 import Dropdown from "./MUI/Dropdown";
 import RadioButtonsGroup from "./MUI/RadioButtonsGroup";
-import { Box, Button, Grid, Paper, styled } from "@mui/material";
+import { Button, Container, Grid, Paper, styled } from "@mui/material";
 import Date from "./MUI/Date";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -50,18 +50,16 @@ const FormBuilder = ({
           isDisabled={isFormDisabled}
         />
       );
-    }
-    // else if (item.type === "date") {
-    //   return (
-    //     <Date
-    //       {...item}
-    //       value={formValue}
-    //       setValue={setFormValue}
-    //       isDisabled={isFormDisabled}
-    //     />
-    //   );
-    // }
-    else {
+    } else if (item.type === "date") {
+      return (
+        <Date
+          {...item}
+          value={formValue}
+          setValue={setFormValue}
+          isDisabled={isFormDisabled}
+        />
+      );
+    } else {
       return (
         <Input
           {...item}
@@ -73,23 +71,35 @@ const FormBuilder = ({
     }
   };
   return (
-    <>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2} justifyContent="center" alignItems="center">
-          {formItems?.map((item, index) => {
-            return (
-              <Grid key={index} item xs={12} sm={12} md={8} lg={6} xl={6}>
-                <Item>{formElement(item)}</Item>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Box>
+    <Container
+      sx={{
+        paddingTop: "2rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Grid maxWidth={"sm"} container spacing={2}>
+        {formItems?.map((item, index) => {
+          return (
+            <Grid
+              key={index}
+              item
+              xs={12}
+              sm={formItems?.length < 6 ? 12 : 6}
+              md={formItems?.length < 6 ? 12 : 6}
+              lg={formItems?.length < 6 ? 12 : 6}
+              xl={formItems?.length < 6 ? 12 : 6}
+            >
+              <Item>{formElement(item)}</Item>
+            </Grid>
+          );
+        })}
+      </Grid>
       {!isFormDisabled && (
         <div
           style={{
-            left: "50%",
-            right: "50%",
             paddingTop: "2rem",
           }}
         >
@@ -104,7 +114,7 @@ const FormBuilder = ({
           </Button>
         </div>
       )}
-    </>
+    </Container>
   );
 };
 

@@ -62,7 +62,6 @@ const ViewOrUpdateEmployee = () => {
 
   return (
     <>
-      ViewOrUpdateEmployee
       <FormBuilder
         details={employee}
         formItems={formItems}

@@ -37,7 +37,7 @@ const AddEmployee = () => {
   };
 
   return (
-    <>
+    <div>
       <Typography variant="h4">Add Employee</Typography>
       <FormBuilder
         formItems={formItems}
@@ -45,7 +45,7 @@ const AddEmployee = () => {
         isFormDisabled={false}
       />
       <BackButton />
-    </>
+    </div>
   );
 };
 
