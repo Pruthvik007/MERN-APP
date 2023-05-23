@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Input from "./MUI/Input";
 import Dropdown from "./MUI/Dropdown";
 import RadioButtonsGroup from "./MUI/RadioButtonsGroup";
-import { Button, Container, Grid, Paper, styled } from "@mui/material";
+import { Box, Button, Container, Grid, Paper, styled } from "@mui/material";
 import Date from "./MUI/Date";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -18,6 +18,7 @@ const FormBuilder = ({
   formItems,
   onSubmit,
   isFormDisabled = false,
+  children,
 }) => {
   const initialState = details || {};
   if (!details) {
@@ -98,11 +99,14 @@ const FormBuilder = ({
         })}
       </Grid>
       {!isFormDisabled && (
-        <div
-          style={{
+        <Box
+          sx={{
             paddingTop: "2rem",
+            display: "flex",
+            gap: ".3rem",
           }}
         >
+          {children}
           <Button
             variant="outlined"
             onClick={(e) => {
@@ -112,7 +116,7 @@ const FormBuilder = ({
           >
             Submit
           </Button>
-        </div>
+        </Box>
       )}
     </Container>
   );

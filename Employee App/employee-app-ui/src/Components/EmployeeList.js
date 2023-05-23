@@ -7,68 +7,45 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import EmployeeServices from "../Services/EmployeeServices";
-import { Button, Container, Tooltip } from "@mui/material";
+import { Button, Container, Pagination, Tooltip } from "@mui/material";
 import { useBackDrop } from "../Helpers/Context";
 import { useAlert } from "../Helpers/Context";
 import { useNavigate } from "react-router";
-import Modal from "./Common/MUI/Modal";
+import Validator from "../Helpers/Validator";
 const EmployeeList = () => {
+  const validator = Validator();
   const { alert } = useAlert();
   const { setIsLoading } = useBackDrop();
   const employeeServices = EmployeeServices();
   const navigate = useNavigate();
-  const employees = useSelector((state) => state.employees);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [employeeForDeletion, setEmployeeForDeletion] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [employees, setEmployees] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const perPage = 5;
   useEffect(() => {
-    getEmployees();
-  }, []);
+    getEmployees(currentPage);
+  }, [currentPage]);
 
-  const getEmployees = async () => {
-    if (employees.length === 0) {
-      setIsLoading(true);
-      const message = await employeeServices.getEmployees();
-      if (message) {
-        alert(message);
-      }
-      setIsLoading(false);
-    }
-  };
-
-  const deleteEmployee = async (id) => {
+  const getEmployees = async (page) => {
     setIsLoading(true);
-    const responseMessage = await employeeServices.deleteEmployee(id);
+    const response = await employeeServices.getEmployees(page);
     setIsLoading(false);
-    if (responseMessage) {
-      alert(responseMessage);
+    if (response) {
+      if (validator.isSuccess(response)) {
+        setEmployees(response.data.employees);
+        setTotalPages(response.data.totalPages);
+      } else {
+        alert(response.message);
+      }
     } else {
-      alert("Employee Deleted Successfully", "success");
+      alert("Unable To Fetch Employees");
     }
-  };
-
-  const DeleteConfirmation = () => {
-    return (
-      <Modal
-        title={"Are You Sure You Want to Delete The Employee ?"}
-        content={`By Continuing, Employment Details of
-          ${employeeForDeletion?.name}
-          Will Be Deleted Permanently. This Cannot be Reverted.`}
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        onConfirm={() => {
-          deleteEmployee(employeeForDeletion?._id);
-        }}
-      />
-    );
   };
 
   return (
     <Container>
-      <DeleteConfirmation />
       <TableContainer component={Paper}>
         <Table
           sx={{ minWidth: 650, overflowX: "auto" }}
@@ -90,7 +67,7 @@ const EmployeeList = () => {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {index + 1}
+                  {currentPage * perPage - (perPage - index - 1)}
                 </TableCell>
                 <TableCell align="center">{employee.name}</TableCell>
                 <TableCell align="center">{employee.email}</TableCell>
@@ -110,22 +87,28 @@ const EmployeeList = () => {
                       <ModeEditIcon />
                     </Tooltip>
                   </Button>
-                  <Button
-                    onClick={() => {
-                      setEmployeeForDeletion(employee);
-                      setIsModalOpen(true);
-                    }}
-                  >
-                    <Tooltip title="Delete">
-                      <DeleteIcon />
-                    </Tooltip>
-                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <Container
+        sx={{
+          padding: "1rem",
+          display: "flex",
+          flexDirection: "row-reverse",
+        }}
+      >
+        <Pagination
+          count={totalPages}
+          variant="outlined"
+          shape="rounded"
+          onChange={(e, value) => {
+            setCurrentPage(value);
+          }}
+        />
+      </Container>
     </Container>
   );
 };

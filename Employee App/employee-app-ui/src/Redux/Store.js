@@ -13,7 +13,6 @@ const persistedReducer = persistReducer(persistConfig, RootReducer);
 export const store = configureStore({
   reducer: persistedReducer,
   preloadedState: {
-    employees: [],
     user: null,
   },
   middleware: [thunk],

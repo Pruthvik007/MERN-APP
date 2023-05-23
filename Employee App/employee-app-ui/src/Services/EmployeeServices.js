@@ -1,34 +1,19 @@
 import { fetchApi } from "../Utils/Fetch";
-import EmployeesActions from "../Redux/Actions/EmployeesActions";
-import Validator from "../Helpers/Validator";
 
 const EmployeeServices = () => {
-  const validator = Validator();
-  const employeeActions = EmployeesActions();
-
   const addEmployee = async (employee) => {
     return fetchApi("employee/", "POST", employee)
       .then((response) => {
-        if (validator.isSuccess(response)) {
-          employeeActions.addEmployee(response.data);
-          return null;
-        } else {
-          return response.message;
-        }
+        return response;
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  const getEmployees = async () => {
-    return fetchApi("employee/")
+  const getEmployees = async (page) => {
+    return fetchApi(`employee?page=${page}`)
       .then((response) => {
-        if (validator.isSuccess(response)) {
-          employeeActions.getEmployees(response.data);
-          return null;
-        } else {
-          return response.message;
-        }
+        return response;
       })
       .catch((error) => {
         console.log(error);
@@ -41,18 +26,12 @@ const EmployeeServices = () => {
       })
       .catch((error) => {
         console.log(error);
-        return "UNABLE TO GET EMPLOYEE";
       });
   };
   const deleteEmployee = async (id) => {
     return fetchApi(`employee/${id}`, "DELETE")
       .then((response) => {
-        if (validator.isSuccess(response)) {
-          employeeActions.deleteEmployee(id);
-          return null;
-        } else {
-          return response.message;
-        }
+        return response;
       })
       .catch((error) => {
         console.log(error);
@@ -61,12 +40,7 @@ const EmployeeServices = () => {
   const updateEmployee = async (user) => {
     return await fetchApi("employee/", "PUT", user)
       .then((response) => {
-        if (validator.isSuccess(response)) {
-          employeeActions.updateEmployee(response.data);
-          return null;
-        } else {
-          return response.message;
-        }
+        return response;
       })
       .catch((error) => {
         console.log(error);
@@ -75,12 +49,7 @@ const EmployeeServices = () => {
   const patchEmployee = async (id, user) => {
     return await fetchApi(`employee/${id}`, "PATCH", user)
       .then((response) => {
-        if (validator.isSuccess(response)) {
-          employeeActions.updateEmployee(response.data);
-          return null;
-        } else {
-          return response.message;
-        }
+        return response;
       })
       .catch((error) => {
         console.log(error);

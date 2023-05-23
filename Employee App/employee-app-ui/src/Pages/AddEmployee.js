@@ -1,7 +1,7 @@
 import React from "react";
 import FormBuilder from "../Components/Common/FormBuilder";
 import { generateEmployeeForm } from "../Helpers/FormHelper";
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import EmployeeServices from "../Services/EmployeeServices";
 import Validator from "../Helpers/Validator";
 import { useAlert, useBackDrop } from "../Helpers/Context";
@@ -26,13 +26,17 @@ const AddEmployee = () => {
 
   const addEmployee = async (employee) => {
     setIsLoading(true);
-    const responseMessage = await service.addEmployee(employee);
+    const response = await service.addEmployee(employee);
     setIsLoading(false);
-    if (responseMessage) {
-      alert(responseMessage);
+    if (response) {
+      if (validator.isSuccess(response)) {
+        alert("Employee Added Successfully", "success");
+        navigate("/");
+      } else {
+        alert(response.message);
+      }
     } else {
-      alert("Employee Added Successfully", "success");
-      navigate("/");
+      alert("Unable To Add Employee");
     }
   };
 
@@ -43,8 +47,9 @@ const AddEmployee = () => {
         formItems={formItems}
         onSubmit={(formValue) => onSubmit(formValue)}
         isFormDisabled={false}
-      />
-      <BackButton />
+      >
+        <BackButton />
+      </FormBuilder>
     </div>
   );
 };

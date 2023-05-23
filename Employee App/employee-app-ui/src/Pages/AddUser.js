@@ -37,8 +37,9 @@ const AddUser = () => {
   return (
     <>
       <Typography variant="h4">Add User</Typography>
-      <FormBuilder formItems={formItems} onSubmit={(user) => onSubmit(user)} />
-      <BackButton />
+      <FormBuilder formItems={formItems} onSubmit={(user) => onSubmit(user)}>
+        <BackButton />
+      </FormBuilder>
     </>
   );
 };

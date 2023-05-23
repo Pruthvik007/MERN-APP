@@ -5,11 +5,22 @@ const {
 } = require("../Helpers/ResponseHelper.js");
 const Employee = Model.Employee;
 const { validateEmployee } = require("../Helpers/Validator.js");
+
 exports.getEmployees = async function (req, res, next) {
   let response = {};
   try {
-    const employees = await Employee.find();
-    response = getSuccessResponse(employees);
+    const currentPage = req.query.page || 1;
+    const perPage = 5;
+    const employees = await Employee.find()
+      .skip(perPage * (currentPage - 1))
+      .limit(perPage);
+    const totalEmployees = await Employee.countDocuments();
+    const totalPages = Math.ceil(totalEmployees / perPage);
+    response = getSuccessResponse({
+      employees: employees,
+      totalPages: totalPages,
+      currentPage: currentPage,
+    });
     res.status(200).send(response);
   } catch (err) {
     next(err);
