@@ -1,2 +1,2 @@
 # Mern-App
-# View At https://pruthvik007.github.io/MERN-APP/
+# View At https://effulgent-lokum-fb843ff.netlify.app/
