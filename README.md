@@ -78,13 +78,15 @@ To run this application locally, follow these steps:
 
 3.Install the dependencies: npm install
 
-4.Set up the environment variables (e.g., MongoDB connection URL, JWT secret) in a .env file.
+4.Set up the environment variables (e.g., MongoDB connection URL, JWT secret, PORT) in a .env file.
 
 5.Start the server: npm start
 
 6.Navigate to the client directory: cd employee-app-ui
 
 7.Install the client dependencies: npm install
+
+8.Set up the environment variables (e.g., Server Base Url along with Port same as that mentioned in server's .env file)
 
 8.Start the client: npm start
 
