@@ -73,12 +73,19 @@ These technologies work together to provide a powerful and efficient employee ma
 To run this application locally, follow these steps:
 
 1.Clone the repository: git clone <repository_url>
+
 2.Install the dependencies: npm install
+
 3.Set up the environment variables (e.g., MongoDB connection URL, JWT secret) in a .env file.
+
 4.Start the server: npm start
+
 5.Navigate to the client directory: cd client
+
 6.Install the client dependencies: npm install
+
 7.Start the client: npm start
+
 8.Access the application in your browser at http://localhost:3000/MERN-APP
 
 Please ensure that you have Node.js and MongoDB installed on your system before running the application.
